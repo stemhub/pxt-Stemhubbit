@@ -1,6 +1,7 @@
 # Stemhub:Bit
 
 Extension for Stemhub Car
+![Stemhub Car](https://github.com/stemhub/pxt-stemhubbit/img/stemhub_car.png)
 
 ## Feature
 
