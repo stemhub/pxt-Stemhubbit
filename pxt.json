@@ -1,6 +1,6 @@
 {
-    "name": "pxt-stemhubbit",
-    "version": "0.0.0",
+    "name": "stemhubbit",
+    "version": "0.0.2",
     "description": "Extension for Stemhub Car",
     "dependencies": {
         "core": "*",
