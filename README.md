@@ -1,7 +1,7 @@
 # Stemhub:Bit
 
 Extension for Stemhub Car
-![Stemhub Car](https://github.com/stemhub/pxt-stemhubbit/img/stemhub_car.png)
+![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/stemhub_car.png)
 
 ## Feature
 
@@ -34,4 +34,4 @@ Extension for Stemhub Car
 
 ## 預覽程式積木
 
-![程式積木視圖](https://github.com/stemhub/pxt-stemhubbit/img/blocks.png)
+![程式積木視圖](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/blocks.png)
