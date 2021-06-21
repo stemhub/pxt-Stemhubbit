@@ -1,9 +1,10 @@
 # Stemhub:Bit
 
-Extension for Stemhub Car
+Stemhub智能小車的擴充功能
+
 ![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/stemhub_car.png)
 
-## Feature
+## 功能
 
 - Designed for robotic projects over microbit
 - On board battery source with usb charger
