@@ -1,3 +1,18 @@
+# Stemhub:Bit
+
+Extension for Stemhub Car
+
+## Feature
+
+- Designed for robotic projects over microbit
+- On board battery source with usb charger
+- Drive 8x servos and 4x DC motors and the same time (with 3.7v battery source to VM)
+- Drive 2x Micro Stepper Motors
+- On board buzzer
+- On board 4x RGB Neo Pixels
+- On board ir receiver
+- 2xPH2.0-4Pin for i2c port and rgbultrasonic
+- 4xPH2.0-2Pin for DC motors
 
 > 在 [https://stemhub.github.io/pxt-stemhubbit/](https://stemhub.github.io/pxt-stemhubbit/) 打開此頁面
 

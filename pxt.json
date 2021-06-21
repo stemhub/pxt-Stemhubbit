@@ -1,15 +1,14 @@
 {
     "name": "pxt-stemhubbit",
     "version": "0.0.0",
-    "description": "",
+    "description": "Extension for Stemhub Car",
     "dependencies": {
         "core": "*",
-        "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "neopixel": "github:kittenbot/pxt-neopixel#v0.6.15"
     },
     "files": [
         "README.md",
-        "main.blocks",
         "main.ts"
     ],
     "testFiles": [
@@ -19,5 +18,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }
