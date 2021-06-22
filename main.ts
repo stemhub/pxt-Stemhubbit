@@ -333,6 +333,10 @@ namespace stemhubbit {
         MotorStopAll()
     }
 
+    /**
+     * Execute single motor
+     * @param speed [-255-255] speed of motor; eg: 150, -150
+    */
     //% blockId=stemhubbit_motor_run block="Motor|%index|speed %speed"
     //% weight=85
     //% speed.min=-255 speed.max=255
@@ -381,9 +385,9 @@ namespace stemhubbit {
     }
 
     /**
-     * Execute single motors with delay
+     * Execute single motor with delay
      * @param speed [-255-255] speed of motor; eg: 150, -150
-     * @param delay seconde delay to stop; eg: 1
+     * @param delay second delay to stop; eg: 1
     */
     //% blockId=stemhubbit_motor_rundelay block="Motor|%index|speed %speed|delay %delay|s"
     //% weight=81
@@ -493,6 +497,9 @@ namespace stemhubbit {
         return Math.floor(ret * 9 / 6 / 58);
     }
     
+    /**
+     * Setting On Board Lights
+    */
     //% blockId="stemhubbit_onboardlight" block="On-board Light %index show color %color" 
     //% weight=78
     //% group="板載燈 (Light)"
@@ -505,6 +512,10 @@ namespace stemhubbit {
         }
     }
     
+    /**
+     * Setting On Board Lights with brightness
+     * @param brightness brightness of light; eg: 255
+    */
     //% blockId="stemhubbit_onboardlightbrightness" block="On-board Light %index color %color brightness %brightness" 
     //% weight=77
     //% brightness.min=0 speed.max=255
