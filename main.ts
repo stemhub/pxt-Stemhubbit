@@ -531,6 +531,10 @@ namespace stemhubbit {
         tmprgb.showColor(color)
     }
 
+    /**
+     * Setting the Ultrasonic Lights
+     * @param index Ultrasonic light; eg: RgbUltrasonics.All
+    */
     //% blockId="stemhubbit_ultrasoniclight" block="Ultrasonic Light %index show color %color" 
     //% weight=7
     //% group="超聲波 (Ultrasonic)"
