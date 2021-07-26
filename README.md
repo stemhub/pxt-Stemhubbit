@@ -6,14 +6,12 @@ Stemhub智能小車的擴充功能
 
 ## 功能
 
-- Designed for robotic projects over microbit
-- On board battery source with usb charger
-- Drive 8x servos and 4x DC motors and the same time (with 3.7v battery source to VM)
+- On board battery with usb charging
+- Drive 8x servos and 4x DC motors at the same time (with 3.7v battery)
 - Drive 2x Micro Stepper Motors
 - On board buzzer
 - On board 4x RGB Neo Pixels
-- On board ir receiver
-- 2xPH2.0-4Pin for i2c port and rgbultrasonic
+- 2xPH2.0-4Pin for i2c port and RGB Ultrasonic
 - 4xPH2.0-2Pin for DC motors
 
 ## 作為擴充功能使用
