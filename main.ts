@@ -7,11 +7,13 @@ namespace stemhubbit {
     const SUBADR1 = 0x02
     const SUBADR2 = 0x03
     const SUBADR3 = 0x04
+
     const PRESCALE = 0xFE
     const LED0_ON_L = 0x06
     const LED0_ON_H = 0x07
     const LED0_OFF_L = 0x08
     const LED0_OFF_H = 0x09
+
     const ALL_LED_ON_L = 0xFA
     const ALL_LED_ON_H = 0xFB
     const ALL_LED_OFF_L = 0xFC
@@ -29,16 +31,6 @@ namespace stemhubbit {
     const STP_CHD_L = 3071
     const STP_CHD_H = 1023
 
-    // HT16K33 commands
-    const HT16K33_ADDRESS = 0x70
-    const HT16K33_BLINK_CMD = 0x80
-    const HT16K33_BLINK_DISPLAYON = 0x01
-    const HT16K33_BLINK_OFF = 0
-    const HT16K33_BLINK_2HZ = 1
-    const HT16K33_BLINK_1HZ = 2
-    const HT16K33_BLINK_HALFHZ = 3
-    const HT16K33_CMD_BRIGHTNESS = 0xE0
-
     export enum Servos {
         S1 = 0x01,
         S2 = 0x02,
@@ -51,20 +43,15 @@ namespace stemhubbit {
     }
 
     export enum Motors {
-        M1 = 0x3,
-        M2 = 0x4,
-        M3 = 0x1,
-        M4 = 0x2
+        M1 = 8,
+        M2 = 10,
+        M3 = 12,
+        M4 = 14
     }
 
     export enum Steppers {
         M1 = 0x1,
         M2 = 0x2
-    }
-
-    export enum SonarVersion {
-        V1 = 0x1,
-        V2 = 0x2
     }
 
     export enum Turns {
@@ -85,9 +72,6 @@ namespace stemhubbit {
     }
 
     let initialized = false
-    let initializedMatrix = false
-    let neoStrip: neopixel.Strip;
-    let matBuf = pins.createBuffer(17);
     let distanceBuf = 0;
 
     function i2cwrite(addr: number, reg: number, value: number) {
@@ -112,9 +96,6 @@ namespace stemhubbit {
     function initPCA9685(): void {
         i2cwrite(PCA9685_ADDRESS, MODE1, 0x00)
         setFreq(50);
-        for (let idx = 0; idx < 16; idx++) {
-            setPwm(idx, 0, 0);
-        }
         initialized = true
     }
 
@@ -137,10 +118,9 @@ namespace stemhubbit {
     function setPwm(channel: number, on: number, off: number): void {
         if (channel < 0 || channel > 15)
             return;
-        //serial.writeValue("ch", channel)
-        //serial.writeValue("on", on)
-        //serial.writeValue("off", off)
-
+        if (!initialized) {
+            initPCA9685();
+        }
         let buf = pins.createBuffer(5);
         buf[0] = LED0_ON_L + 4 * channel;
         buf[1] = on & 0xff;
@@ -153,59 +133,34 @@ namespace stemhubbit {
     function setStepper(index: number, dir: boolean): void {
         if (index == 1) {
             if (dir) {
-                setPwm(0, STP_CHA_L, STP_CHA_H);
-                setPwm(2, STP_CHB_L, STP_CHB_H);
-                setPwm(1, STP_CHC_L, STP_CHC_H);
-                setPwm(3, STP_CHD_L, STP_CHD_H);
+                setPwm(11, STP_CHA_L, STP_CHA_H);
+                setPwm(9, STP_CHB_L, STP_CHB_H);
+                setPwm(10, STP_CHC_L, STP_CHC_H);
+                setPwm(8, STP_CHD_L, STP_CHD_H);
             } else {
-                setPwm(3, STP_CHA_L, STP_CHA_H);
-                setPwm(1, STP_CHB_L, STP_CHB_H);
-                setPwm(2, STP_CHC_L, STP_CHC_H);
-                setPwm(0, STP_CHD_L, STP_CHD_H);
+                setPwm(8, STP_CHA_L, STP_CHA_H);
+                setPwm(10, STP_CHB_L, STP_CHB_H);
+                setPwm(9, STP_CHC_L, STP_CHC_H);
+                setPwm(11, STP_CHD_L, STP_CHD_H);
             }
         } else {
             if (dir) {
-                setPwm(4, STP_CHA_L, STP_CHA_H);
-                setPwm(6, STP_CHB_L, STP_CHB_H);
-                setPwm(5, STP_CHC_L, STP_CHC_H);
-                setPwm(7, STP_CHD_L, STP_CHD_H);
+                setPwm(12, STP_CHA_L, STP_CHA_H);
+                setPwm(14, STP_CHB_L, STP_CHB_H);
+                setPwm(13, STP_CHC_L, STP_CHC_H);
+                setPwm(15, STP_CHD_L, STP_CHD_H);
             } else {
-                setPwm(7, STP_CHA_L, STP_CHA_H);
-                setPwm(5, STP_CHB_L, STP_CHB_H);
-                setPwm(6, STP_CHC_L, STP_CHC_H);
-                setPwm(4, STP_CHD_L, STP_CHD_H);
+                setPwm(15, STP_CHA_L, STP_CHA_H);
+                setPwm(13, STP_CHB_L, STP_CHB_H);
+                setPwm(14, STP_CHC_L, STP_CHC_H);
+                setPwm(12, STP_CHD_L, STP_CHD_H);
             }
         }
     }
 
     function stopMotor(index: number) {
-        setPwm((index - 1) * 2, 0, 0);
-        setPwm((index - 1) * 2 + 1, 0, 0);
-    }
-
-    function matrixInit() {
-        i2ccmd(HT16K33_ADDRESS, 0x21);// turn on oscillator
-        i2ccmd(HT16K33_ADDRESS, HT16K33_BLINK_CMD | HT16K33_BLINK_DISPLAYON | (0 << 1));
-        i2ccmd(HT16K33_ADDRESS, HT16K33_CMD_BRIGHTNESS | 0xF);
-    }
-
-    function matrixShow() {
-        matBuf[0] = 0x00;
-        pins.i2cWriteBuffer(HT16K33_ADDRESS, matBuf);
-    }
-
-
-    /**
-     * Init RGB pixels mounted on stemhub car
-     */
-    //% blockId="stemhubbit_rgb" block="RGB Light"
-    //% weight=5
-    //% group="LED矩陣 (LEDMatrix)"
-    export function rgb(): neopixel.Strip {
-        if (!neoStrip) {
-            neoStrip = neopixel.create(DigitalPin.P16, 10, NeoPixelMode.RGB)
-        }
-        return neoStrip;
+        setPwm(index, 0, 0);
+        setPwm(index+ 1, 0, 0);
     }
 
     /**
@@ -218,32 +173,23 @@ namespace stemhubbit {
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="舵機 (Servo)"
     export function Servo(index: Servos, degree: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
         // 50hz: 20,000 us
         let v_us = (degree * 1800 / 180 + 600) // 0.6 ~ 2.4
         let value = v_us * 4096 / 20000
-        setPwm(index + 7, 0, value)
+        setPwm(index, 0, value)
     }
 
-    /**
-     * Geek Servo
-     * @param degree [-45-225] degree of servo; eg: -45, 90, 225
-    */
-    //% blockId=stemhubbit_gservo block="Geek Servo|%index|degree %degree"
+    //% blockId=stemhubbit_servo2 block="Servo(270°)|%index|degree %degree"
     //% weight=99
-    //% degree.min=-45 degree.max=225
+    //% degree.min=0 degree.max=270
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="舵機 (Servo)"
-    export function GeekServo(index: Servos, degree: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
+    export function Servo2(index: Servos, degree: number): void {
         // 50hz: 20,000 us
-        let v_us = ((degree - 90) * 20 / 3 + 1500) // 0.6 ~ 2.4
-        let value = v_us * 4096 / 20000
-        setPwm(index + 7, 0, value)
+        let newvalue = Math.map(degree, 0, 270, 0, 180);
+        let us = (newvalue * 1800 / 180 + 600); // 0.6 ~ 2.4
+        let pwm = us * 4096 / 20000;
+        setPwm(index, 0, pwm);
     }
 
     //% blockId=stemhubbit_stepper_degree block="Stepper 28BYJ-48|%index|degree %degree"
@@ -258,7 +204,6 @@ namespace stemhubbit {
         basic.pause(10240 * degree / 360);
         MotorStopAll()
     }
-
 
     //% blockId=stemhubbit_stepper_turn block="Stepper 28BYJ-48|%index|turn %turn"
     //% weight=90
@@ -281,10 +226,12 @@ namespace stemhubbit {
         degree2 = Math.abs(degree2);
         basic.pause(10240 * Math.min(degree1, degree2) / 360);
         if (degree1 > degree2) {
-            stopMotor(3); stopMotor(4);
+            stopMotor(3);
+            stopMotor(4);
             basic.pause(10240 * (degree1 - degree2) / 360);
         } else {
-            stopMotor(1); stopMotor(2);
+            stopMotor(1);
+            stopMotor(2);
             basic.pause(10240 * (degree2 - degree1) / 360);
         }
 
@@ -353,16 +300,26 @@ namespace stemhubbit {
         if (speed <= -4096) {
             speed = -4095
         }
-        if (index > 4 || index <= 0)
-            return
-        let pp = (index - 1) * 2
-        let pn = (index - 1) * 2 + 1
-        if (speed >= 0) {
-            setPwm(pp, 0, speed)
-            setPwm(pn, 0, 0)
-        } else {
-            setPwm(pp, 0, 0)
-            setPwm(pn, 0, -speed)
+        let a = index
+        let b = index + 1
+
+        if (a > 10) {
+            if (speed >= 0) {
+                setPwm(a, 0, speed)
+                setPwm(b, 0, 0)
+            } else {
+                setPwm(a, 0, 0)
+                setPwm(b, 0, -speed)
+            }
+        }
+        else {
+            if (speed >= 0) {
+                setPwm(b, 0, speed)
+                setPwm(a, 0, 0)
+            } else {
+                setPwm(b, 0, 0)
+                setPwm(a, 0, -speed)
+            }
         }
     }
 
@@ -415,63 +372,20 @@ namespace stemhubbit {
         if (!initialized) {
             initPCA9685()
         }
-        for (let idx = 1; idx <= 4; idx++) {
-            stopMotor(idx);
-        }
-    }
-
-    //% blockId=stemhubbit_matrix_draw block="Matrix Draw|X %x|Y %y"
-    //% weight=69
-    //% group="LED矩陣 (LEDMatrix)"
-    export function MatrixDraw(x: number, y: number): void {
-        if (!initializedMatrix) {
-            matrixInit();
-            initializedMatrix = true;
-        }
-        x = Math.round(x)
-        y = Math.round(y)
-        
-        let idx = y * 2 + Math.idiv(x, 8);
-        
-        let tmp = matBuf[idx + 1];
-        tmp |= (1 << (x % 8));
-        matBuf[idx + 1] = tmp;
-    }
-
-    //% blockId=stemhubbit_matrix_refresh block="Matrix Refresh"
-    //% weight=69
-    //% group="LED矩陣 (LEDMatrix)"
-    export function MatrixRefresh(): void {
-        if (!initializedMatrix) {
-            matrixInit();
-            initializedMatrix = true;
-        }
-        matrixShow();
-    }
-
-    //% blockId=stemhubbit_matrix_clear block="Matrix Clear"
-    //% weight=65
-    //% blockGap=50
-    //% group="LED矩陣 (LEDMatrix)"
-    export function MatrixClear(): void {
-        if (!initializedMatrix) {
-            matrixInit();
-            initializedMatrix = true;
-        }
-        for (let i = 0; i < 16; i++) {
-            matBuf[i + 1] = 0;
-        }
-        matrixShow();
+        stopMotor(Motors.M1);
+        stopMotor(Motors.M2);
+        stopMotor(Motors.M3);
+        stopMotor(Motors.M4);
     }
 
     /**
-     * Read Ultrasonic Distance(cm) on Pin2
+     * Read Ultrasonic Distance(cm) on Pin 5
      */
     //% blockId=stemhubbit_readultrasonic block="Ultrasonic|Distance(cm)"
     //% weight=10
     //% group="超聲波 (Ultrasonic)"
     export function ReadUltrasonic(): number {
-        return RgbUltrasonic(DigitalPin.P2)
+        return RgbUltrasonic(DigitalPin.P16)
     }
 
     //% blockId=stemhubbit_rgbultrasonic block="Ultrasonic|Distance(cm)|pin %pin"
@@ -484,8 +398,8 @@ namespace stemhubbit {
         pins.digitalWritePin(pin, 1);
         control.waitMicros(50);
         pins.digitalWritePin(pin, 0);
-	    control.waitMicros(1000);
-        while(!pins.digitalReadPin(pin));
+        control.waitMicros(1000);
+        while (!pins.digitalReadPin(pin));
         // read pulse
         let d = pins.pulseIn(pin, PulseValue.High, 25000);
         let ret = d;
@@ -496,7 +410,21 @@ namespace stemhubbit {
         distanceBuf = d;
         return Math.floor(ret * 9 / 6 / 58);
     }
-    
+
+    let neoStrip: neopixel.Strip;
+    /**
+     * Init RGB pixels on stemhub car
+     */
+    //% blockId="stemhubbit_rgb" block="RGB Light"
+    //% weight=5
+    //% group="板載燈 (Light)"
+    export function rgb(): neopixel.Strip {
+        if (!neoStrip) {
+            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
+        }
+        return neoStrip;
+    }
+
     /**
      * Setting On Board Lights
     */
@@ -504,14 +432,9 @@ namespace stemhubbit {
     //% weight=78
     //% group="板載燈 (Light)"
     export function OnBoardLight(index: OnBoardLightOffset, color: NeoPixelColors) {
-        if (index == OnBoardLightOffset.ALL) {
-            rgb().range(0, 4).showColor(color)
-        } else {
-            rgb().setPixelColor(index, color)
-            rgb().show()
-        }
+        OnBoardLightBrightness(index,color,255)
     }
-    
+
     /**
      * Setting On Board Lights with brightness
      * @param brightness brightness of light; eg: 255
@@ -521,16 +444,20 @@ namespace stemhubbit {
     //% brightness.min=0 speed.max=255
     //% group="板載燈 (Light)"
     export function OnBoardLightBrightness(index: OnBoardLightOffset, color: NeoPixelColors, brightness: number) {
-        let tmprgb: neopixel.Strip
-        if (index == OnBoardLightOffset.ALL) {
-            tmprgb = rgb().range(0, 4)
-        } else {
-            tmprgb = rgb().range(index, 1)
+        if (!neoStrip) {
+            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
         }
-        tmprgb.setBrightness(brightness)
-        tmprgb.showColor(color)
+        let tmpstrip: neopixel.Strip
+        if (index == OnBoardLightOffset.ALL) {
+            tmpstrip = neoStrip.range(0, 4)
+        } else {
+            tmpstrip = neoStrip.range(index, 1)
+        }
+        tmpstrip.setBrightness(brightness)
+        tmpstrip.showColor(color)
     }
 
+    let UltrasonicLightstrip: neopixel.Strip
     /**
      * Setting the Ultrasonic Lights
      * @param index Ultrasonic light; eg: RgbUltrasonics.All
@@ -539,19 +466,25 @@ namespace stemhubbit {
     //% weight=7
     //% group="超聲波 (Ultrasonic)"
     export function UltrasonicLight(index: RgbUltrasonics, color: NeoPixelColors) {
+        if (!UltrasonicLightstrip) {
+            UltrasonicLightstrip = neopixel.create(DigitalPin.P15, 6, NeoPixelMode.RGB)
+        }
+        let tmpstrip: neopixel.Strip
         switch (index) {
             case RgbUltrasonics.Left:
-            rgb().range(4, 3).showColor(color)
-            break
+                tmpstrip = UltrasonicLightstrip.range(0, 3)
+                break
             case RgbUltrasonics.Right:
-            rgb().range(7, 3).showColor(color)
-            break
+                tmpstrip = UltrasonicLightstrip.range(3, 3)
+                break
             case RgbUltrasonics.All:
-            rgb().range(4, 6).showColor(color)
-            break
+                tmpstrip = UltrasonicLightstrip.range(0, 6)
+                break
         }
+        tmpstrip.showColor(color)
     }
 }
+
 enum OnBoardLightOffset {
     //% block=one
     ONE = 0,
