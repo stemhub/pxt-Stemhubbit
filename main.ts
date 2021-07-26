@@ -1,5 +1,5 @@
 //% color="#0000F0" weight=10 icon="\uf0f4" block="Stemhub:bit"
-//% groups='["舵機 (Servo)", "步進 (Stepper)", "馬達 (Motor)", "超聲波 (Ultrasonic)", "板載燈 (Light)", "LED矩陣 (LEDMatrix)"]'
+//% groups='["舵機 (Servo)", "馬達 (Motor)", "超聲波 (Ultrasonic)", "板載燈 (Light)",  "步進 (Stepper)"]'
 namespace stemhubbit {
     const PCA9685_ADDRESS = 0x40
     const MODE1 = 0x00
@@ -168,7 +168,7 @@ namespace stemhubbit {
      * @param degree [0-180] degree of servo; eg: 0, 90, 180
     */
     //% blockId=stemhubbit_servo block="Servo|%index|degree %degree"
-    //% weight=100
+    //% weight=150
     //% degree.min=0 degree.max=180
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="舵機 (Servo)"
@@ -180,7 +180,7 @@ namespace stemhubbit {
     }
 
     //% blockId=stemhubbit_servo2 block="Servo(270°)|%index|degree %degree"
-    //% weight=99
+    //% weight=149
     //% degree.min=0 degree.max=270
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="舵機 (Servo)"
@@ -192,100 +192,12 @@ namespace stemhubbit {
         setPwm(index, 0, pwm);
     }
 
-    //% blockId=stemhubbit_stepper_degree block="Stepper 28BYJ-48|%index|degree %degree"
-    //% weight=90
-    //% group="步進 (Stepper)"
-    export function StepperDegree(index: Steppers, degree: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
-        setStepper(index, degree > 0);
-        degree = Math.abs(degree);
-        basic.pause(10240 * degree / 360);
-        MotorStopAll()
-    }
-
-    //% blockId=stemhubbit_stepper_turn block="Stepper 28BYJ-48|%index|turn %turn"
-    //% weight=90
-    //% group="步進 (Stepper)"
-    export function StepperTurn(index: Steppers, turn: Turns): void {
-        let degree = turn;
-        StepperDegree(index, degree);
-    }
-
-    //% blockId=stemhubbit_stepper_dual block="Dual Stepper(Degree) |M1 %degree1| M2 %degree2"
-    //% weight=89
-    //% group="步進 (Stepper)"
-    export function StepperDual(degree1: number, degree2: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
-        setStepper(1, degree1 > 0);
-        setStepper(2, degree2 > 0);
-        degree1 = Math.abs(degree1);
-        degree2 = Math.abs(degree2);
-        basic.pause(10240 * Math.min(degree1, degree2) / 360);
-        if (degree1 > degree2) {
-            stopMotor(3);
-            stopMotor(4);
-            basic.pause(10240 * (degree1 - degree2) / 360);
-        } else {
-            stopMotor(1);
-            stopMotor(2);
-            basic.pause(10240 * (degree2 - degree1) / 360);
-        }
-
-        MotorStopAll()
-    }
-
-    /**
-     * Stepper Car move forward
-     * @param distance Distance to move in cm; eg: 10, 20
-     * @param diameter diameter of wheel in mm; eg: 48
-    */
-    //% blockId=stemhubbit_stpcar_move block="Car Forward|Distance(cm) %distance|Wheel Diameter(mm) %diameter"
-    //% weight=88
-    //% group="步進 (Stepper)"
-    export function StpCarMove(distance: number, diameter: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
-        let delay = 10240 * 10 * distance / 3 / diameter; // use 3 instead of pi
-        setStepper(1, delay > 0);
-        setStepper(2, delay > 0);
-        delay = Math.abs(delay);
-        basic.pause(delay);
-        MotorStopAll()
-    }
-
-    /**
-     * Stepper Car turn by degree
-     * @param turn Degree to turn; eg: 90, 180, 360
-     * @param diameter diameter of wheel in mm; eg: 48
-     * @param track track width of car; eg: 125
-    */
-    //% blockId=stemhubbit_stpcar_turn block="Car Turn|Degree %turn|Wheel Diameter(mm) %diameter|Track(mm) %track"
-    //% weight=87
-    //% blockGap=50
-    //% group="步進 (Stepper)"
-    export function StpCarTurn(turn: number, diameter: number, track: number): void {
-        if (!initialized) {
-            initPCA9685()
-        }
-        let delay = 10240 * turn * track / 360 / diameter;
-        setStepper(1, delay < 0);
-        setStepper(2, delay > 0);
-        delay = Math.abs(delay);
-        basic.pause(delay);
-        MotorStopAll()
-    }
-
     /**
      * Execute single motor
      * @param speed [-255-255] speed of motor; eg: 150, -150
     */
     //% blockId=stemhubbit_motor_run block="Motor|%index|speed %speed"
-    //% weight=85
+    //% weight=140
     //% speed.min=-255 speed.max=255
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="馬達 (Motor)"
@@ -323,14 +235,13 @@ namespace stemhubbit {
         }
     }
 
-
     /**
      * Execute two motors at the same time
      * @param speed1 [-255-255] speed of motor; eg: 150, -150
      * @param speed2 [-255-255] speed of motor; eg: 150, -150
     */
     //% blockId=stemhubbit_motor_dual block="Motor|%motor1|speed %speed1|%motor2|speed %speed2"
-    //% weight=84
+    //% weight=139
     //% speed1.min=-255 speed1.max=255
     //% speed2.min=-255 speed2.max=255
     //% inlineInputMode=inline
@@ -347,7 +258,7 @@ namespace stemhubbit {
      * @param delay second delay to stop; eg: 1
     */
     //% blockId=stemhubbit_motor_rundelay block="Motor|%index|speed %speed|delay %delay|s"
-    //% weight=81
+    //% weight=138
     //% speed.min=-255 speed.max=255
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     //% group="馬達 (Motor)"
@@ -358,14 +269,14 @@ namespace stemhubbit {
     }
 
     //% blockId=stemhubbit_stop block="Motor Stop|%index|"
-    //% weight=80
+    //% weight=137
     //% group="馬達 (Motor)"
     export function MotorStop(index: Motors): void {
         MotorRun(index, 0);
     }
 
     //% blockId=stemhubbit_stop_all block="Motor Stop All"
-    //% weight=79
+    //% weight=136
     //% blockGap=50
     //% group="馬達 (Motor)"
     export function MotorStopAll(): void {
@@ -379,17 +290,17 @@ namespace stemhubbit {
     }
 
     /**
-     * Read Ultrasonic Distance(cm) on Pin 5
+     * Read Ultrasonic Distance(cm) on Pin 16
      */
     //% blockId=stemhubbit_readultrasonic block="Ultrasonic|Distance(cm)"
-    //% weight=10
+    //% weight=100
     //% group="超聲波 (Ultrasonic)"
     export function ReadUltrasonic(): number {
         return RgbUltrasonic(DigitalPin.P16)
     }
 
     //% blockId=stemhubbit_rgbultrasonic block="Ultrasonic|Distance(cm)|pin %pin"
-    //% weight=9
+    //% weight=99
     //% group="超聲波 (Ultrasonic)"
     export function RgbUltrasonic(pin: DigitalPin): number {
         pins.setPull(pin, PinPullMode.PullNone);
@@ -411,59 +322,13 @@ namespace stemhubbit {
         return Math.floor(ret * 9 / 6 / 58);
     }
 
-    let neoStrip: neopixel.Strip;
-    /**
-     * Init RGB pixels on stemhub car
-     */
-    //% blockId="stemhubbit_rgb" block="RGB Light"
-    //% weight=5
-    //% group="板載燈 (Light)"
-    export function rgb(): neopixel.Strip {
-        if (!neoStrip) {
-            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
-        }
-        return neoStrip;
-    }
-
-    /**
-     * Setting On Board Lights
-    */
-    //% blockId="stemhubbit_onboardlight" block="On-board Light %index show color %color" 
-    //% weight=78
-    //% group="板載燈 (Light)"
-    export function OnBoardLight(index: OnBoardLightOffset, color: NeoPixelColors) {
-        OnBoardLightBrightness(index,color,255)
-    }
-
-    /**
-     * Setting On Board Lights with brightness
-     * @param brightness brightness of light; eg: 255
-    */
-    //% blockId="stemhubbit_onboardlightbrightness" block="On-board Light %index color %color brightness %brightness" 
-    //% weight=77
-    //% brightness.min=0 speed.max=255
-    //% group="板載燈 (Light)"
-    export function OnBoardLightBrightness(index: OnBoardLightOffset, color: NeoPixelColors, brightness: number) {
-        if (!neoStrip) {
-            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
-        }
-        let tmpstrip: neopixel.Strip
-        if (index == OnBoardLightOffset.ALL) {
-            tmpstrip = neoStrip.range(0, 4)
-        } else {
-            tmpstrip = neoStrip.range(index, 1)
-        }
-        tmpstrip.setBrightness(brightness)
-        tmpstrip.showColor(color)
-    }
-
     let UltrasonicLightstrip: neopixel.Strip
     /**
      * Setting the Ultrasonic Lights
      * @param index Ultrasonic light; eg: RgbUltrasonics.All
     */
     //% blockId="stemhubbit_ultrasoniclight" block="Ultrasonic Light %index show color %color" 
-    //% weight=7
+    //% weight=98
     //% group="超聲波 (Ultrasonic)"
     export function UltrasonicLight(index: RgbUltrasonics, color: NeoPixelColors) {
         if (!UltrasonicLightstrip) {
@@ -483,6 +348,140 @@ namespace stemhubbit {
         }
         tmpstrip.showColor(color)
     }
+
+    let neoStrip: neopixel.Strip;
+    /**
+     * Init RGB pixels on stemhub car
+     */
+    //% blockId="stemhubbit_rgb" block="RGB Light"
+    //% weight=80
+    //% group="板載燈 (Light)"
+    export function rgb(): neopixel.Strip {
+        if (!neoStrip) {
+            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
+        }
+        return neoStrip;
+    }
+
+    /**
+     * Setting On Board Lights
+    */
+    //% blockId="stemhubbit_onboardlight" block="On-board Light %index show color %color" 
+    //% weight=79
+    //% group="板載燈 (Light)"
+    export function OnBoardLight(index: OnBoardLightOffset, color: NeoPixelColors) {
+        OnBoardLightBrightness(index, color, 255)
+    }
+
+    /**
+     * Setting On Board Lights with brightness
+     * @param brightness brightness of light; eg: 255
+    */
+    //% blockId="stemhubbit_onboardlightbrightness" block="On-board Light %index color %color brightness %brightness" 
+    //% weight=78
+    //% brightness.min=0 speed.max=255
+    //% group="板載燈 (Light)"
+    export function OnBoardLightBrightness(index: OnBoardLightOffset, color: NeoPixelColors, brightness: number) {
+        if (!neoStrip) {
+            neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
+        }
+        let tmpstrip: neopixel.Strip
+        if (index == OnBoardLightOffset.ALL) {
+            tmpstrip = neoStrip.range(0, 4)
+        } else {
+            tmpstrip = neoStrip.range(index, 1)
+        }
+        tmpstrip.setBrightness(brightness)
+        tmpstrip.showColor(color)
+    }
+
+    //% blockId=stemhubbit_stepper_degree block="Stepper 28BYJ-48|%index|degree %degree"
+    //% weight=20
+    //% group="步進 (Stepper)"
+    export function StepperDegree(index: Steppers, degree: number): void {
+        if (!initialized) {
+            initPCA9685()
+        }
+        setStepper(index, degree > 0);
+        degree = Math.abs(degree);
+        basic.pause(10240 * degree / 360);
+        MotorStopAll()
+    }
+
+    //% blockId=stemhubbit_stepper_turn block="Stepper 28BYJ-48|%index|turn %turn"
+    //% weight=19
+    //% group="步進 (Stepper)"
+    export function StepperTurn(index: Steppers, turn: Turns): void {
+        let degree = turn;
+        StepperDegree(index, degree);
+    }
+
+    //% blockId=stemhubbit_stepper_dual block="Dual Stepper(Degree) |M1 %degree1| M2 %degree2"
+    //% weight=18
+    //% group="步進 (Stepper)"
+    export function StepperDual(degree1: number, degree2: number): void {
+        if (!initialized) {
+            initPCA9685()
+        }
+        setStepper(1, degree1 > 0);
+        setStepper(2, degree2 > 0);
+        degree1 = Math.abs(degree1);
+        degree2 = Math.abs(degree2);
+        basic.pause(10240 * Math.min(degree1, degree2) / 360);
+        if (degree1 > degree2) {
+            stopMotor(3);
+            stopMotor(4);
+            basic.pause(10240 * (degree1 - degree2) / 360);
+        } else {
+            stopMotor(1);
+            stopMotor(2);
+            basic.pause(10240 * (degree2 - degree1) / 360);
+        }
+
+        MotorStopAll()
+    }
+
+    /**
+     * Stepper Car move forward
+     * @param distance Distance to move in cm; eg: 10, 20
+     * @param diameter diameter of wheel in mm; eg: 48
+    */
+    //% blockId=stemhubbit_stpcar_move block="Car Forward|Distance(cm) %distance|Wheel Diameter(mm) %diameter"
+    //% weight=17
+    //% group="步進 (Stepper)"
+    export function StpCarMove(distance: number, diameter: number): void {
+        if (!initialized) {
+            initPCA9685()
+        }
+        let delay = 10240 * 10 * distance / 3 / diameter; // use 3 instead of pi
+        setStepper(1, delay > 0);
+        setStepper(2, delay > 0);
+        delay = Math.abs(delay);
+        basic.pause(delay);
+        MotorStopAll()
+    }
+
+    /**
+     * Stepper Car turn by degree
+     * @param turn Degree to turn; eg: 90, 180, 360
+     * @param diameter diameter of wheel in mm; eg: 48
+     * @param track track width of car; eg: 125
+    */
+    //% blockId=stemhubbit_stpcar_turn block="Car Turn|Degree %turn|Wheel Diameter(mm) %diameter|Track(mm) %track"
+    //% weight=16
+    //% blockGap=50
+    //% group="步進 (Stepper)"
+    export function StpCarTurn(turn: number, diameter: number, track: number): void {
+        if (!initialized) {
+            initPCA9685()
+        }
+        let delay = 10240 * turn * track / 360 / diameter;
+        setStepper(1, delay < 0);
+        setStepper(2, delay > 0);
+        delay = Math.abs(delay);
+        basic.pause(delay);
+        MotorStopAll()
+    }
 }
 
 enum OnBoardLightOffset {
@@ -497,6 +496,7 @@ enum OnBoardLightOffset {
     //% block=all
     ALL = 4
 }
+
 enum RgbUltrasonics {
     //% block=left
     Left = 0x00,
