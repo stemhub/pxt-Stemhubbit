@@ -4,6 +4,8 @@ Extension for Stemhub Smart Car
 
 ![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/stemhub_car.png)
 
+For more information, please visit https://www.stemeshop.com/product-page/micro-bit-%E6%99%BA%E8%83%BD%E5%B0%8F%E8%BB%8A
+
 ## Features of the board
 
 - On board battery with usb charging
