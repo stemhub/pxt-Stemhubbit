@@ -1,6 +1,6 @@
 {
     "name": "stemhubbit",
-    "version": "0.0.6",
+    "version": "0.1.1",
     "description": "Extension for Stemhub Car",
     "dependencies": {
         "core": "*",
