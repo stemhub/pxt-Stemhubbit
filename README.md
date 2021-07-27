@@ -16,7 +16,21 @@ Extension for Stemhub Smart Car
 
 ## Code Example
 ```JavaScript
-
+let distance = 0
+basic.forever(function () {
+    distance = stemhubbit.ReadUltrasonic()
+    if (distance < 20 && distance != 0) {
+        stemhubbit.MotorStopAll()
+        basic.pause(100)
+        stemhubbit.MotorRunDual(stemhubbit.Motors.M1, -80, stemhubbit.Motors.M2, 80)
+        stemhubbit.MotorRunDual(stemhubbit.Motors.M3, -80, stemhubbit.Motors.M4, 80)
+        basic.pause(1900)
+    } else {
+        stemhubbit.MotorRunDual(stemhubbit.Motors.M1, 50, stemhubbit.Motors.M2, 50)
+        stemhubbit.MotorRunDual(stemhubbit.Motors.M3, 50, stemhubbit.Motors.M4, 50)
+    }
+    basic.pause(100)
+})
 ```
 
 ## Block Preview
