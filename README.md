@@ -4,7 +4,7 @@ Extension for Stemhub Smart Car
 
 ![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/stemhub_car.png)
 
-## Features
+## Features of the board
 
 - On board battery with usb charging
 - Drive 8x servos and 4x DC motors at the same time (with 3.7v battery)
@@ -15,17 +15,22 @@ Extension for Stemhub Smart Car
 - 4xPH2.0-2Pin for DC motors
 
 ## Code Example
+
+Obstacle avoidance using ultrasonic sensor
+
 ```JavaScript
 let distance = 0
 basic.forever(function () {
     distance = stemhubbit.ReadUltrasonic()
     if (distance < 20 && distance != 0) {
+        //stop the car and turn
         stemhubbit.MotorStopAll()
         basic.pause(100)
         stemhubbit.MotorRunDual(stemhubbit.Motors.M1, -80, stemhubbit.Motors.M2, 80)
         stemhubbit.MotorRunDual(stemhubbit.Motors.M3, -80, stemhubbit.Motors.M4, 80)
         basic.pause(1900)
     } else {
+        //move forward
         stemhubbit.MotorRunDual(stemhubbit.Motors.M1, 50, stemhubbit.Motors.M2, 50)
         stemhubbit.MotorRunDual(stemhubbit.Motors.M3, 50, stemhubbit.Motors.M4, 50)
     }
