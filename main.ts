@@ -30,7 +30,10 @@ namespace stemhubbit {
 
     const STP_CHD_L = 3071
     const STP_CHD_H = 1023
-
+    
+    /**
+    * Index of Servos
+    */
     export enum Servos {
         S1 = 0,
         S2,
@@ -41,19 +44,28 @@ namespace stemhubbit {
         S7,
         S8
     }
-
+    
+    /**
+    * Index of Motors
+    */
     export enum Motors {
         M1 = 8,
         M2 = 10,
         M3 = 12,
         M4 = 14
     }
-
+    
+    /**
+    * Index of Steppers
+    */
     export enum Steppers {
         M1 = 0x1,
         M2 = 0x2
     }
-
+    
+    /**
+    * Degree of Turns
+    */
     export enum Turns {
         //% blockId="T1B4" block="1/4"
         T1B4 = 90,
@@ -178,7 +190,10 @@ namespace stemhubbit {
         let value = v_us * 4096 / 20000
         setPwm(index, 0, value)
     }
-
+    
+    /**
+    * Servo (270 degree) Execute
+    */
     //% blockId=stemhubbit_servo2 block="Servo(270°)|%index|degree %degree"
     //% weight=149
     //% degree.min=0 degree.max=270
@@ -267,14 +282,20 @@ namespace stemhubbit {
         basic.pause(delay * 1000);
         MotorRun(index, 0);
     }
-
+    
+    /**
+    * Stop single motor
+    */
     //% blockId=stemhubbit_stop block="Motor Stop|%index|"
     //% weight=137
     //% group="馬達 (Motor)"
     export function MotorStop(index: Motors): void {
         MotorRun(index, 0);
     }
-
+    
+    /**
+    * Stop all motors
+    */
     //% blockId=stemhubbit_stop_all block="Motor Stop All"
     //% weight=136
     //% blockGap=50
@@ -298,7 +319,10 @@ namespace stemhubbit {
     export function ReadUltrasonic(): number {
         return RgbUltrasonic(DigitalPin.P16)
     }
-
+    
+    /**
+     * Read Ultrasonic Distance(cm) on a given Pin
+     */
     //% blockId=stemhubbit_rgbultrasonic block="Ultrasonic|Distance(cm)|pin %pin"
     //% weight=99
     //% group="超聲波 (Ultrasonic)"
@@ -351,7 +375,7 @@ namespace stemhubbit {
 
     let neoStrip: neopixel.Strip;
     /**
-     * Init RGB pixels on stemhub car
+     * Initialize RGB pixels on stemhub car
      */
     //% blockId="stemhubbit_rgb" block="RGB Light"
     //% weight=80
@@ -394,7 +418,10 @@ namespace stemhubbit {
         tmpstrip.setBrightness(brightness)
         tmpstrip.showColor(color)
     }
-
+    
+    /**
+     * Stepper car turning degree
+     */
     //% blockId=stemhubbit_stepper_degree block="Stepper 28BYJ-48|%index|degree %degree"
     //% weight=20
     //% group="步進 (Stepper)"
@@ -407,7 +434,10 @@ namespace stemhubbit {
         basic.pause(10240 * degree / 360);
         MotorStopAll()
     }
-
+    
+    /**
+     * Stepper car turning degree (turn)
+     */
     //% blockId=stemhubbit_stepper_turn block="Stepper 28BYJ-48|%index|turn %turn"
     //% weight=19
     //% group="步進 (Stepper)"
@@ -415,7 +445,10 @@ namespace stemhubbit {
         let degree = turn;
         StepperDegree(index, degree);
     }
-
+    
+    /**
+     * Stepper car turning degree (two motor)
+     */
     //% blockId=stemhubbit_stepper_dual block="Dual Stepper(Degree) |M1 %degree1| M2 %degree2"
     //% weight=18
     //% group="步進 (Stepper)"
@@ -484,6 +517,9 @@ namespace stemhubbit {
     }
 }
 
+/**
+* Index of On Board Light
+*/
 enum OnBoardLightOffset {
     //% block=one
     ONE = 0,
@@ -497,6 +533,9 @@ enum OnBoardLightOffset {
     ALL = 4
 }
 
+/**
+* Index of Ultrasonic Light
+*/
 enum RgbUltrasonics {
     //% block=left
     Left = 0x00,
