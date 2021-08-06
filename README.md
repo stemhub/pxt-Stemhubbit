@@ -1,7 +1,7 @@
 # Stemhub:Bit
 
 Extension for Stemhub Smart Car. Stemhub bit is an useful extension to control our Stemhub Car.
-With this extension, techers can teach students how to write block program to complete tasks.
+With this extension, teachers can teach students how to write block program to complete tasks.
 
 Some examples of tasks:
 - Programming the micro:bit car motor and speed
