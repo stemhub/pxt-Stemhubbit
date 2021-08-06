@@ -10,7 +10,7 @@ Some examples of tasks:
 - Line follower
 - Maze Solver
 
-![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/img/stemhub_car.png)
+![Stemhub Car](https://github.com/stemhub/pxt-Stemhubbit/blob/master/icon.png)
 
 For more information, please visit https://www.stemeshop.com/product-page/micro-bit-%E6%99%BA%E8%83%BD%E5%B0%8F%E8%BB%8A
 
