@@ -1,5 +1,5 @@
 //% color="#0000F0" weight=10 icon="\uf0f4" block="Stemhub:bit"
-//% groups='["舵機 (Servo)", "馬達 (Motor)", "超聲波 (Ultrasonic)", "板載燈 (Light)",  "步進 (Stepper)"]'
+//% groups='["Servo", "Motor", "Ultrasonic", "Light",  "Stepper"]'
 namespace stemhubbit {
     const PCA9685_ADDRESS = 0x40
     const MODE1 = 0x00
@@ -183,7 +183,7 @@ namespace stemhubbit {
     //% weight=150
     //% degree.min=0 degree.max=180
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    //% group="舵機 (Servo)"
+    //% group="Servo"
     export function Servo(index: Servos, degree: number): void {
         // 50hz: 20,000 us
         let v_us = (degree * 1800 / 180 + 600) // 0.6 ~ 2.4
@@ -198,7 +198,7 @@ namespace stemhubbit {
     //% weight=149
     //% degree.min=0 degree.max=270
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    //% group="舵機 (Servo)"
+    //% group="Servo"
     export function Servo2(index: Servos, degree: number): void {
         // 50hz: 20,000 us
         let newvalue = Math.map(degree, 0, 270, 0, 180);
@@ -215,7 +215,7 @@ namespace stemhubbit {
     //% weight=140
     //% speed.min=-255 speed.max=255
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    //% group="馬達 (Motor)"
+    //% group="Motor"
     export function MotorRun(index: Motors, speed: number): void {
         if (!initialized) {
             initPCA9685()
@@ -261,7 +261,7 @@ namespace stemhubbit {
     //% speed2.min=-255 speed2.max=255
     //% inlineInputMode=inline
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    //% group="馬達 (Motor)"
+    //% group="Motor"
     export function MotorRunDual(motor1: Motors, speed1: number, motor2: Motors, speed2: number): void {
         MotorRun(motor1, speed1);
         MotorRun(motor2, speed2);
@@ -276,7 +276,7 @@ namespace stemhubbit {
     //% weight=138
     //% speed.min=-255 speed.max=255
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    //% group="馬達 (Motor)"
+    //% group="Motor"
     export function MotorRunDelay(index: Motors, speed: number, delay: number): void {
         MotorRun(index, speed);
         basic.pause(delay * 1000);
@@ -288,7 +288,7 @@ namespace stemhubbit {
     */
     //% blockId=stemhubbit_stop block="Motor Stop|%index|"
     //% weight=137
-    //% group="馬達 (Motor)"
+    //% group="Motor"
     export function MotorStop(index: Motors): void {
         MotorRun(index, 0);
     }
@@ -299,7 +299,7 @@ namespace stemhubbit {
     //% blockId=stemhubbit_stop_all block="Motor Stop All"
     //% weight=136
     //% blockGap=50
-    //% group="馬達 (Motor)"
+    //% group="Motor"
     export function MotorStopAll(): void {
         if (!initialized) {
             initPCA9685()
@@ -315,7 +315,7 @@ namespace stemhubbit {
      */
     //% blockId=stemhubbit_readultrasonic block="Ultrasonic|Distance(cm)"
     //% weight=100
-    //% group="超聲波 (Ultrasonic)"
+    //% group="Ultrasonic"
     export function ReadUltrasonic(): number {
         return RgbUltrasonic(DigitalPin.P16)
     }
@@ -325,7 +325,7 @@ namespace stemhubbit {
      */
     //% blockId=stemhubbit_rgbultrasonic block="Ultrasonic|Distance(cm)|pin %pin"
     //% weight=99
-    //% group="超聲波 (Ultrasonic)"
+    //% group="Ultrasonic"
     export function RgbUltrasonic(pin: DigitalPin): number {
         pins.setPull(pin, PinPullMode.PullNone);
         pins.digitalWritePin(pin, 0);
@@ -353,7 +353,7 @@ namespace stemhubbit {
     */
     //% blockId="stemhubbit_ultrasoniclight" block="Ultrasonic Light %index show color %color" 
     //% weight=98
-    //% group="超聲波 (Ultrasonic)"
+    //% group="Ultrasonic"
     export function UltrasonicLight(index: RgbUltrasonics, color: NeoPixelColors) {
         if (!UltrasonicLightstrip) {
             UltrasonicLightstrip = neopixel.create(DigitalPin.P15, 6, NeoPixelMode.RGB)
@@ -379,7 +379,7 @@ namespace stemhubbit {
      */
     //% blockId="stemhubbit_rgb" block="RGB Light"
     //% weight=80
-    //% group="板載燈 (Light)"
+    //% group="Light"
     export function rgb(): neopixel.Strip {
         if (!neoStrip) {
             neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
@@ -392,7 +392,7 @@ namespace stemhubbit {
     */
     //% blockId="stemhubbit_onboardlight" block="On-board Light %index show color %color" 
     //% weight=79
-    //% group="板載燈 (Light)"
+    //% group="Light"
     export function OnBoardLight(index: OnBoardLightOffset, color: NeoPixelColors) {
         OnBoardLightBrightness(index, color, 255)
     }
@@ -404,7 +404,7 @@ namespace stemhubbit {
     //% blockId="stemhubbit_onboardlightbrightness" block="On-board Light %index color %color brightness %brightness" 
     //% weight=78
     //% brightness.min=0 speed.max=255
-    //% group="板載燈 (Light)"
+    //% group="Light"
     export function OnBoardLightBrightness(index: OnBoardLightOffset, color: NeoPixelColors, brightness: number) {
         if (!neoStrip) {
             neoStrip = neopixel.create(DigitalPin.P12, 4, NeoPixelMode.RGB)
@@ -424,7 +424,7 @@ namespace stemhubbit {
      */
     //% blockId=stemhubbit_stepper_degree block="Stepper 28BYJ-48|%index|degree %degree"
     //% weight=20
-    //% group="步進 (Stepper)"
+    //% group="Stepper"
     export function StepperDegree(index: Steppers, degree: number): void {
         if (!initialized) {
             initPCA9685()
@@ -440,7 +440,7 @@ namespace stemhubbit {
      */
     //% blockId=stemhubbit_stepper_turn block="Stepper 28BYJ-48|%index|turn %turn"
     //% weight=19
-    //% group="步進 (Stepper)"
+    //% group="Stepper"
     export function StepperTurn(index: Steppers, turn: Turns): void {
         let degree = turn;
         StepperDegree(index, degree);
@@ -451,7 +451,7 @@ namespace stemhubbit {
      */
     //% blockId=stemhubbit_stepper_dual block="Dual Stepper(Degree) |M1 %degree1| M2 %degree2"
     //% weight=18
-    //% group="步進 (Stepper)"
+    //% group="Stepper"
     export function StepperDual(degree1: number, degree2: number): void {
         if (!initialized) {
             initPCA9685()
@@ -481,7 +481,7 @@ namespace stemhubbit {
     */
     //% blockId=stemhubbit_stpcar_move block="Car Forward|Distance(cm) %distance|Wheel Diameter(mm) %diameter"
     //% weight=17
-    //% group="步進 (Stepper)"
+    //% group="Stepper"
     export function StpCarMove(distance: number, diameter: number): void {
         if (!initialized) {
             initPCA9685()
@@ -503,7 +503,7 @@ namespace stemhubbit {
     //% blockId=stemhubbit_stpcar_turn block="Car Turn|Degree %turn|Wheel Diameter(mm) %diameter|Track(mm) %track"
     //% weight=16
     //% blockGap=50
-    //% group="步進 (Stepper)"
+    //% group="Stepper"
     export function StpCarTurn(turn: number, diameter: number, track: number): void {
         if (!initialized) {
             initPCA9685()
