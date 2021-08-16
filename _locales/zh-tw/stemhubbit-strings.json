@@ -24,5 +24,10 @@
     "OnBoardLightOffset.ALL|block": "全部燈",
     "RgbUltrasonics.Left|block": "左邊",
     "RgbUltrasonics.Right|block": "右邊",
-    "RgbUltrasonics.All|block": "全部"
+    "RgbUltrasonics.All|block": "全部",
+    "{id:group}Servo": "舵機",
+    "{id:group}Motor": "馬達",
+    "{id:group}Ultrasonic": "超聲波",
+    "{id:group}Light": "板載燈",
+    "{id:group}Stepper": "步進"
 }
